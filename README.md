@@ -401,6 +401,14 @@ The following attributes are exported:
  * `certificate_pem` - The certificate in PEM format.
  * `issuer_pem` - The intermediate certificate of the issuer.
 
+### Map PEMs to AWS Certificate manager
+
+The fields you are looking for translate to:
+
+* Certificate body: acme_certificate.certificate.certificate_pem
+* Certificate private key: acme_certificate.certificate.private_key_pem
+* Certificate chain: acme_certificate.certificate.issuer_pem
+
 ## License
 
 ```
