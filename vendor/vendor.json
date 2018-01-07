@@ -688,6 +688,12 @@
 			"revisionTime": "2017-06-08T00:51:49Z"
 		},
 		{
+			"checksumSHA1": "7cHRrdndBsM+z1FRsp5IhfDgU9E=",
+			"path": "github.com/dnsimple/dnsimple-go/dnsimple",
+			"revision": "9641549ef4d560b09b6f44d9f394af0efcb438ee",
+			"revisionTime": "2017-12-11T13:40:23Z"
+		},
+		{
 			"path": "github.com/docker/docker/api/types/swarm",
 			"revision": ""
 		},
@@ -825,6 +831,12 @@
 			"path": "github.com/golang/protobuf/proto",
 			"revision": "69b215d01a5606c843240eab4937eab3acee6530",
 			"revisionTime": "2017-02-17T23:44:32Z"
+		},
+		{
+			"checksumSHA1": "p3IB18uJRs4dL2K5yx24MrLYE9A=",
+			"path": "github.com/google/go-querystring/query",
+			"revision": "53e6ce116135b80d037921a7fdd5138cf32d7a8a",
+			"revisionTime": "2017-01-11T10:11:55Z"
 		},
 		{
 			"checksumSHA1": "V/53BpqgOkSDZCX6snQCAkdO2fM=",
@@ -1897,10 +1909,10 @@
 			"revisionTime": "2017-02-19T04:51:39Z"
 		},
 		{
-			"checksumSHA1": "JsIMAs8XEDRm7+PSQ5yTkeNmNQE=",
+			"checksumSHA1": "5ttnmqA3Mi5YFdy0+6Qq9wP9qTY=",
 			"path": "github.com/xenolf/lego/providers/dns/dnsimple",
-			"revision": "6cac0ea7d8b28c889f709ec7fa92e92b82f490dd",
-			"revisionTime": "2017-02-19T04:51:39Z"
+			"revision": "b929aa5aab5ad2e197bb3d74ef99fac61bfa47bc",
+			"revisionTime": "2017-11-15T10:03:00Z"
 		},
 		{
 			"checksumSHA1": "MiF+MC9IOe/4eNeI5x4wJSq/wkc=",
