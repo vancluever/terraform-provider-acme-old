@@ -12,7 +12,7 @@ func WaitFor(timeout, interval time.Duration, f func() (bool, error)) error {
 	for {
 		select {
 		case <-timeup:
-			return fmt.Errorf("Time limit exceeded. Last error: %s", lastErr)
+			return fmt.Errorf("Time limit exceeded (%fs). Last error: %s", timeout.Seconds(), lastErr)
 		default:
 		}
 

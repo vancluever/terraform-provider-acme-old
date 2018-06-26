@@ -529,10 +529,12 @@
   version = "v0.5.4"
 
 [[projects]]
+  branch = "master"
   name = "github.com/xenolf/lego"
   packages = [
     "acme",
     "log",
+    "platform/config/env",
     "providers/dns/auroradns",
     "providers/dns/azure",
     "providers/dns/bluecat",
@@ -565,8 +567,7 @@
     "providers/dns/route53",
     "providers/dns/vultr"
   ]
-  revision = "27e0f97c9df37cad8c4ba0ef1d133fa57afb7469"
-  version = "v1.0.1"
+  revision = "8b6701514cc0a6285a327908f3f9ce05bcacbffd"
 
 [[projects]]
   branch = "master"
@@ -769,6 +770,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8a88f3388747187b2f240b68d6e5ef314efb7746acf137bba87bf5a1a8daeb68"
+  inputs-digest = "2ee8a22b13751005577261d24db8d43ce313f20ccd295afd32cba31520190fca"
   solver-name = "gps-cdcl"
   solver-version = 1
