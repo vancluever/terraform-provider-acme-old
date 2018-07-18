@@ -7,8 +7,10 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/hashicorp/terraform/helper/hashcode"
@@ -406,6 +408,56 @@ func mapEnvironmentVariableValues(keyMapping map[string]string) {
 	}
 }
 
+func toRoute53Config(m map[string]interface{}) *route53.Config {
+	cfg := route53.NewDefaultConfig()
+
+	if v, ok := m["max_retries"]; ok {
+		s := v.(string)
+		i, err := strconv.Atoi(s)
+		if err != nil {
+			log.Printf("[WARN] Could not convert %v to integer %s", v, err)
+		} else {
+			cfg.MaxRetries = i
+		}
+	}
+
+	if v, ok := m["hosted_zone_id"]; ok {
+		cfg.HostedZoneID = v.(string)
+	}
+
+	if v, ok := m["ttl"]; ok {
+		s := v.(string)
+		i, err := strconv.Atoi(s)
+		if err != nil {
+			log.Printf("[WARN] Could not convert %v to integer %s", v, err)
+		} else {
+			cfg.TTL = i
+		}
+	}
+
+	if v, ok := m["propagation_timeout"]; ok {
+		s := v.(string)
+		i, err := strconv.Atoi(s)
+		if err != nil {
+			log.Printf("[WARN] Could not convert %v to integer %s", v, err)
+		} else {
+			cfg.PropagationTimeout = time.Duration(i) * time.Second
+		}
+	}
+
+	if v, ok := m["polling_interval"]; ok {
+		s := v.(string)
+		i, err := strconv.Atoi(s)
+		if err != nil {
+			log.Printf("[WARN] Could not convert %v to integer %s", v, err)
+		} else {
+			cfg.PollingInterval = time.Duration(i) * time.Second
+		}
+	}
+
+	return cfg
+}
+
 // setDNSChallenge takes an *acme.Client and the DNS challenge complex
 // structure as a map[string]interface{}, and configues the client to only
 // allow a DNS challenge with the configured provider.
@@ -485,7 +537,11 @@ func setDNSChallenge(client *acme.Client, m map[string]interface{}) error {
 	case "rackspace":
 		provider, err = rackspace.NewDNSProvider()
 	case "route53":
-		provider, err = route53.NewDNSProvider()
+		cfg := route53.NewDefaultConfig()
+		if v, ok := m["config"]; ok {
+			cfg = toRoute53Config(v.(map[string]interface{}))
+		}
+		provider, err = route53.NewDNSProviderConfig(cfg)
 	case "rfc2136":
 		provider, err = rfc2136.NewDNSProvider()
 	case "vultr":
