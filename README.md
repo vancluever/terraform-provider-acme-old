@@ -1,3 +1,8 @@
+**This project is now archived.** The new location of the project can be found
+[here][acme-in-tf-providers]!
+
+[acme-in-tf-providers]: https://github.com/terraform-providers/terraform-provider-acme
+
 Terraform ACME Provider
 ========================
 
