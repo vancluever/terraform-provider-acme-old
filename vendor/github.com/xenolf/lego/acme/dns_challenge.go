@@ -5,12 +5,12 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"strings"
 	"time"
 
 	"github.com/miekg/dns"
-	"github.com/xenolf/lego/log"
 )
 
 type preCheckDNSFunc func(fqdn, value string) (bool, error)
@@ -72,10 +72,10 @@ type dnsChallenge struct {
 }
 
 func (s *dnsChallenge) Solve(chlng challenge, domain string) error {
-	log.Printf("[INFO][%s] acme: Trying to solve DNS-01", domain)
+	log.Printf("[WARN] [%s] acme: Trying to solve DNS-01", domain)
 
 	if s.provider == nil {
-		return errors.New("No DNS Provider configured")
+		return errors.New("no DNS Provider configured")
 	}
 
 	// Generate the Key Authorization for the challenge
@@ -86,18 +86,18 @@ func (s *dnsChallenge) Solve(chlng challenge, domain string) error {
 
 	err = s.provider.Present(domain, chlng.Token, keyAuth)
 	if err != nil {
-		return fmt.Errorf("Error presenting token: %s", err)
+		return fmt.Errorf("error presenting token: %s", err)
 	}
 	defer func() {
 		err := s.provider.CleanUp(domain, chlng.Token, keyAuth)
 		if err != nil {
-			log.Printf("Error cleaning up %s: %v ", domain, err)
+			log.Printf("[INFO] Error cleaning up %s: %v ", domain, err)
 		}
 	}()
 
 	fqdn, value, _ := DNS01Record(domain, keyAuth)
 
-	log.Printf("[INFO][%s] Checking DNS record propagation using %+v", domain, RecursiveNameservers)
+	log.Printf("[INFO] [%s] Checking DNS record propagation using %+v", domain, RecursiveNameservers)
 
 	var timeout, interval time.Duration
 	switch provider := s.provider.(type) {
@@ -120,8 +120,10 @@ func (s *dnsChallenge) Solve(chlng challenge, domain string) error {
 // checkDNSPropagation checks if the expected TXT record has been propagated to all authoritative nameservers.
 func checkDNSPropagation(fqdn, value string) (bool, error) {
 	// Initial attempt to resolve at the recursive NS
+	log.Printf("[INFO] Checking DNS propagation %s, %v ", fqdn, RecursiveNameservers)
 	r, err := dnsQuery(fqdn, dns.TypeTXT, RecursiveNameservers, true)
 	if err != nil {
+		log.Printf("[INFO] dnsQuery error %s", err)
 		return false, err
 	}
 	if r.Rcode == dns.RcodeSuccess {
@@ -134,10 +136,13 @@ func checkDNSPropagation(fqdn, value string) (bool, error) {
 				}
 			}
 		}
+	} else {
+		log.Printf("[ERROR] DNS query was not a success %d: %s, %v ", r.Rcode, fqdn, RecursiveNameservers)
 	}
 
 	authoritativeNss, err := lookupNameservers(fqdn)
 	if err != nil {
+		log.Printf("[ERROR] Failed to lookupNameservers %s", fqdn)
 		return false, err
 	}
 
@@ -159,6 +164,7 @@ func checkAuthoritativeNss(fqdn, value string, nameservers []string) (bool, erro
 		var found bool
 		for _, rr := range r.Answer {
 			if txt, ok := rr.(*dns.TXT); ok {
+				log.Printf("[INFO] Comparing %v with %s", txt.Txt, value)
 				if strings.Join(txt.Txt, "") == value {
 					found = true
 					break

@@ -11,5 +11,5 @@
   name = "github.com/terraform-providers/terraform-provider-tls"
 
 [[constraint]]
-  version = "v1.0.1"
+  branch = "master"
   name = "github.com/xenolf/lego"

@@ -6,9 +6,11 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/xenolf/lego/acme"
+	"github.com/xenolf/lego/providers/dns/route53"
 )
 
 const testDirResponseText = `
@@ -363,5 +365,28 @@ func TestACME_mapEnvironmentVariableValues(t *testing.T) {
 	actual := os.Getenv("ACME_ENV_TEST_BAR")
 	if expected != actual {
 		t.Fatalf("expected ACME_ENV_TEST_BAR to be %q, got %q", expected, actual)
+	}
+}
+
+func TestACME_route53config(t *testing.T) {
+	m := map[string]interface{}{
+		"max_retries": "1",
+		"ttl":         "100",
+		"propagation_timeout": "600",
+		"polling_interval":    "2",
+		"hosted_zone_id":      "abc123",
+	}
+	expected := &route53.Config{
+		MaxRetries:         1,
+		TTL:                100,
+		PropagationTimeout: time.Duration(10) * time.Minute,
+		PollingInterval:    time.Duration(2) * time.Second,
+		HostedZoneID:       "abc123",
+	}
+
+	cfg := toRoute53Config(m)
+
+	if !reflect.DeepEqual(cfg, expected) {
+		t.Fatalf("Configs not equal %v, %v", expected, cfg)
 	}
 }
